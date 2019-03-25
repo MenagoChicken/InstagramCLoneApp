@@ -1,5 +1,6 @@
 package pl.menagochicken.instagamcloneapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView logoImageView;
 
     private ConstraintLayout background;
+
+    private Intent intent;
 
 
     @Override
@@ -129,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (e == null) {
 
-                    Toast.makeText(MainActivity.this, "Log in --- Welcome " + username, Toast.LENGTH_LONG).show();
+                    intent = new Intent(MainActivity.this,UserListActivity.class);
+                    startActivity(intent);
 
                 } else {
 
