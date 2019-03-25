@@ -3,8 +3,10 @@ package pl.menagochicken.instagamcloneapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,9 +16,11 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //stworzenie potrzebnych zmiennych
     private boolean logInCheck = true;
 
     private TextView textView;
@@ -27,36 +31,17 @@ public class MainActivity extends AppCompatActivity {
     private Button logInButton;
     private Button switchButton;
 
-    public void switchLogInSignUp(View view) {
-        if (logInCheck) {
-            Log.i("Switch Button", "Switch button pressed, switched to Sign up");
-            logInButton.setText("Sign up");
-            switchButton.setText("Or log in?");
-            logInCheck = false;
-        } else {
-            Log.i("Switch Button", "Switch button pressed, switched to Log in");
-            logInButton.setText("Log in");
-            switchButton.setText("Or sign up?");
-            logInCheck = true;
-        }
+    private ImageView logoImageView;
 
-    }
+    private ConstraintLayout background;
 
-    public void logInSignUp(View view) {
-        if (logInCheck) {
-            Log.i("Log in button", "Log In button pressed.");
-            logIn(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-        } else {
-            Log.i("Sign up button", "Sign Up button pressed.");
-            newUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //przypisanie zmiennych
         textView = findViewById(R.id.appTitle);
         textView.setText(R.string.app_name);
 
@@ -66,8 +51,49 @@ public class MainActivity extends AppCompatActivity {
         logInButton = findViewById(R.id.logIn);
         switchButton = findViewById(R.id.switchButton);
 
+        logoImageView = findViewById(R.id.logo);
+
+        background = findViewById(R.id.backgroundLayout);
+        background.setOnClickListener(this);
+
     }
 
+    //zmiana funkcjonalności buttonu
+    public void switchLogInSignUp(View view) {
+        if (logInCheck) {
+
+            Log.i("Switch Button", "Switch button pressed, switched to Sign up");
+            logInButton.setText("Sign up");
+            switchButton.setText("Or log in?");
+            logInCheck = false;
+
+        } else {
+
+            Log.i("Switch Button", "Switch button pressed, switched to Log in");
+            logInButton.setText("Log in");
+            switchButton.setText("Or sign up?");
+            logInCheck = true;
+
+        }
+
+    }
+
+    //zalogowanie lub zarejestrowanie uzytkowanika w bazie danych
+    public void logInSignUp(View view) {
+        if (logInCheck) {
+
+            Log.i("Log in button", "Log In button pressed.");
+            logIn(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+
+        } else {
+
+            Log.i("Sign up button", "Sign Up button pressed.");
+            newUser(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+
+        }
+    }
+
+    //stworzenie nowego uzytkowanika w bazie danych
     public void newUser(final String username, String password) {
 
         ParseUser user = new ParseUser();
@@ -77,40 +103,65 @@ public class MainActivity extends AppCompatActivity {
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
+
                 if (e == null) {
+
                     Toast.makeText(MainActivity.this, "Sign up --- Welcome " + username, Toast.LENGTH_LONG).show();
                     clearView();
+
                 } else {
+
                     Log.i("Failed", "Failed to Sign up - " + e.toString());
                     Toast.makeText(MainActivity.this, "Something went wrong :( - Account already exists for this username.", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
 
     }
 
+    //zaloowanie się do aplikacji
     public void logIn(final String username, String password) {
 
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
+
                 if (e == null) {
+
                     Toast.makeText(MainActivity.this, "Log in --- Welcome " + username, Toast.LENGTH_LONG).show();
+
                 } else {
+
                     Log.i("Failed", "Failed to Log in - " + e.toString());
                     Toast.makeText(MainActivity.this, "Something went wrong :( - Invalid username/password.", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
 
     }
 
+    //wyczyszczenie widoku po rejestracji
     public void clearView() {
         usernameEditText.setText("");
         passwordEditText.setText("");
         logInButton.setText("Log in");
         switchButton.setText("Or sign up?");
         logInCheck = true;
+    }
+
+    //usunięcie klawiatury z widoku
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == R.id.backgroundLayout || v.getId() == R.id.logo || v.getId() == R.id.appTitle){
+
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+
+        }
+
     }
 }
 
