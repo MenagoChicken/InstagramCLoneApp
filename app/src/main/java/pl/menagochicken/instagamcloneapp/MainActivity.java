@@ -1,7 +1,9 @@
 package pl.menagochicken.instagamcloneapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //stworzenie potrzebnych zmiennych
     private boolean logInCheck = true;
+    private boolean isLoggedIn = true;
 
     private TextView textView;
 
@@ -38,11 +41,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Intent intent;
 
+    private SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //przypisanie zmiennych
         textView = findViewById(R.id.appTitle);
@@ -58,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         background = findViewById(R.id.backgroundLayout);
         background.setOnClickListener(this);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        checkIfUserIsLogedIn();
 
     }
 
@@ -132,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (e == null) {
 
-                    intent = new Intent(MainActivity.this,UserListActivity.class);
-                    startActivity(intent);
+                    preferences.edit().putBoolean("isLoggedIn",isLoggedIn).apply();
+                    goToUserListActivity();
 
                 } else {
 
@@ -166,6 +177,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+    }
+
+    public void checkIfUserIsLogedIn(){
+
+        boolean check = preferences.getBoolean("isLoggedIn",false);
+        if (check){
+            goToUserListActivity();
+        }
+    }
+
+    public void goToUserListActivity(){
+        intent = new Intent(MainActivity.this,UserListActivity.class);
+        startActivity(intent);
     }
 }
 
