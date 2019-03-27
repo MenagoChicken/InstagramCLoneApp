@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //stworzenie potrzebnych zmiennych
     private boolean logInCheck = true;
-    private boolean isLoggedIn = true;
 
     private TextView textView;
 
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
 
-
         //przypisanie zmiennych
         textView = findViewById(R.id.appTitle);
         textView.setText(R.string.app_name);
@@ -68,7 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        checkIfUserIsLogedIn();
+        //sprawdzenie czy jest zalogowany i przekierowanie na userlist
+        if (ParseUser.getCurrentUser() != null) {
+            goToUserListActivity();
+        }
 
     }
 
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //zaloowanie się do aplikacji
+    //zalogwanie się do aplikacji
     public void logIn(final String username, String password) {
 
         ParseUser.logInInBackground(username, password, new LogInCallback() {
@@ -143,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (e == null) {
 
-                    preferences.edit().putBoolean("isLoggedIn",isLoggedIn).apply();
                     goToUserListActivity();
 
                 } else {
@@ -170,25 +170,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.backgroundLayout || v.getId() == R.id.logo || v.getId() == R.id.appTitle){
+        if (v.getId() == R.id.backgroundLayout || v.getId() == R.id.logo || v.getId() == R.id.appTitle) {
 
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
         }
 
     }
 
-    public void checkIfUserIsLogedIn(){
-
-        boolean check = preferences.getBoolean("isLoggedIn",false);
-        if (check){
-            goToUserListActivity();
-        }
-    }
-
-    public void goToUserListActivity(){
-        intent = new Intent(MainActivity.this,UserListActivity.class);
+    //przeniesienie nna listę użytkowników
+    public void goToUserListActivity() {
+        intent = new Intent(MainActivity.this, UserListActivity.class);
         startActivity(intent);
     }
 }
