@@ -57,12 +57,42 @@ public class UserListActivity extends AppCompatActivity {
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null){
 
+            //pobranie wybranego zdjęcia
             Uri selectedImage = data.getData();
 
             try {
+                //zapisanie do bitmapy
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),selectedImage);
 
                 Log.i("Photo", "Pobrane");
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                byte[] byteArray = stream.toByteArray();
+
+                //stworzenie nowego pliku bytowego
+                ParseFile file = new ParseFile("image.png", byteArray);
+
+                //stworzenie nowej klasy
+                ParseObject object = new ParseObject("Image");
+
+                //umieszczenie obiektu
+                object.put("image", file);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+
+                //zapis w tle
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null){
+                            Toast.makeText(UserListActivity.this, "Image shared!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(UserListActivity.this, "Image not shared :(", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -86,6 +116,7 @@ public class UserListActivity extends AppCompatActivity {
 
     }
 
+    //wybiernaie opcji z menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
