@@ -5,4 +5,7 @@
     <item
         android:id="@+id/shere"
         android:title="Shere" />
+    <item
+        android:id="@+id/logout"
+        android:title="Logout" />
 </menu>

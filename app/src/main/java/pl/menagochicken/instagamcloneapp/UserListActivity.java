@@ -50,7 +50,7 @@ public class UserListActivity extends AppCompatActivity {
         }
     }
 
-    //pobranie zdjęcia z galeri
+    //pobranie zdjęcia z galerii i zapis do servera
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -127,6 +127,12 @@ public class UserListActivity extends AppCompatActivity {
             } else {
                 getPhoto();
             }
+        }
+
+        if (item.getItemId() == R.id.logout){
+           ParseUser.logOut();
+           Intent intent = new Intent(this,MainActivity.class);
+           startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
