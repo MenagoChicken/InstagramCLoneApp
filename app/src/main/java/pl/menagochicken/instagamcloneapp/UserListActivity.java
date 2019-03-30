@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -182,6 +184,17 @@ public class UserListActivity extends AppCompatActivity {
                     Log.i("ERROR", e.toString());
 
                 }
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(getApplicationContext(), UsersFeedActivity.class);
+                intent.putExtra("username", usernames.get(position));
+                startActivity(intent);
+
             }
         });
 
