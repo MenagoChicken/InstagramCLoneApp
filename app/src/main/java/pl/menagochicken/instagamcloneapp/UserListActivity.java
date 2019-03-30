@@ -55,14 +55,14 @@ public class UserListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null){
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
 
             //pobranie wybranego zdjęcia
             Uri selectedImage = data.getData();
 
             try {
                 //zapisanie do bitmapy
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),selectedImage);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
                 Log.i("Photo", "Pobrane");
 
@@ -86,7 +86,7 @@ public class UserListActivity extends AppCompatActivity {
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        if (e == null){
+                        if (e == null) {
                             Toast.makeText(UserListActivity.this, "Image shared!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(UserListActivity.this, "Image not shared :(", Toast.LENGTH_SHORT).show();
@@ -128,11 +128,11 @@ public class UserListActivity extends AppCompatActivity {
                 getPhoto();
             }
         }
-
-        if (item.getItemId() == R.id.logout){
-           ParseUser.logOut();
-           Intent intent = new Intent(this,MainActivity.class);
-           startActivity(intent);
+//wylogowanie
+        if (item.getItemId() == R.id.logout) {
+            ParseUser.logOut();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -163,12 +163,12 @@ public class UserListActivity extends AppCompatActivity {
         userListQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
-                if (e == null){
+                if (e == null) {
 
-                    if (objects.size() > 0){
+                    if (objects.size() > 0) {
 
                         //przepisanie nazw użytkowników do listy
-                        for (ParseUser user : objects){
+                        for (ParseUser user : objects) {
 
                             usernames.add(user.getUsername());
 
@@ -189,12 +189,12 @@ public class UserListActivity extends AppCompatActivity {
 
     //pobieranie zdjęcia
     public void getPhoto() {
-        try{
+        try {
             Intent intent = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, 1);
-        }catch(Exception exp){
-            Log.i("Error",exp.toString());
+        } catch (Exception exp) {
+            Log.i("Error", exp.toString());
         }
     }
 }
